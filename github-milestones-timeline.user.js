@@ -133,9 +133,24 @@ function onHistoryUpdated(callback) {
   });
   observer.observe(document, { subtree: true, childList: true });
 }
-onHistoryUpdated(() => setTimeout((location) => addMilestonesTimeline(), 10));
+onHistoryUpdated(() => setTimeout((location) => addMilestonesTimeline(), 100));
+
+function defaultToClosestDueDate() {
+  const url = new URL(location.href);
+  if (!url.pathname.endsWith('/milestones')) return;
+  if (!url.search) {
+    console.log('redirect');
+    url.search = '?direction=asc&sort=due_date&state=open';
+    location.href = url.href;
+  }
+}
+defaultToClosestDueDate();
+onHistoryUpdated(defaultToClosestDueDate);
 
 function addMilestonesTimeline() {
+  const url = new URL(location.href);
+  if (!url.pathname.endsWith('/milestones')) return;
+
   const milestones = getMilestones();
   const currentDate = new Date();
   const milestonesAndNow = [
