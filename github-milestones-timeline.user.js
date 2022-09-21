@@ -34,6 +34,31 @@ function addMilestonesStyles() {
     .milestone-description-html ul {
       margin: 0;
     }
+    .milestones-timeline {
+      height: 40px;
+      margin: 20px 40px;
+      position: relative;
+    }
+    .milestones-timeline-line {
+      background: #afb8c1;
+      height: 2px;
+      left: 0;
+      transform: translateY(-50%);
+      position: absolute;
+      right: 0;
+      top: 50%;
+    }
+    .milestones-timeline-milestone {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) translateX(-7px);
+      background: white;
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      border: 2px solid #afb8c1;
+
+    }
   `);
 }
 
@@ -51,12 +76,36 @@ function getMilestones() {
       : dateElement.textContent.trim().replace('Due by ', '');
     return { title, date: new Date(dateText) };
   });
-  return milestones;
+
+  return milestones.sort((a, b) => a.date - b.date);
 }
 
 function addMilestonesTimeline() {
   const milestones = getMilestones();
-  console.log(JSON.stringify(milestones));
+  if (milestones.length < 2) return;
+
+  const tableHeaderElement = document.querySelector('.table-list-header');
+  const timelineElement = document.createElement('div');
+  timelineElement.classList.add('milestones-timeline');
+  const lineElement = document.createElement('div');
+  lineElement.classList.add('milestones-timeline-line');
+  timelineElement.appendChild(lineElement);
+  milestones.forEach((milestone) => {
+    const milestoneElement = document.createElement('div');
+    milestoneElement.classList.add('milestones-timeline-milestone');
+    milestoneElement.style.left = `${
+      ((milestone.date - milestones[0].date) /
+        (milestones[milestones.length - 1].date - milestones[0].date)) *
+      100
+    }%`;
+    // milestoneElement.textContent = milestone.title;
+    timelineElement.appendChild(milestoneElement);
+  });
+
+  tableHeaderElement.parentElement.insertBefore(
+    timelineElement,
+    tableHeaderElement
+  );
 }
 
 addMilestonesStyles();
