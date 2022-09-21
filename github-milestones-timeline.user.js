@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        GitHub Milestones Timeline
-// @match       https://github.com/*/*/milestones
+// @match       https://github.com/*
 // @version     1.0
 // @description Adds a graphical timeline to GitHub Milestones
 // @author      Nathan Ward
@@ -133,19 +133,22 @@ function onHistoryUpdated(callback) {
   });
   observer.observe(document, { subtree: true, childList: true });
 }
-onHistoryUpdated(() => setTimeout((location) => addMilestonesTimeline(), 100));
-
 function defaultToClosestDueDate() {
   const url = new URL(location.href);
-  if (!url.pathname.endsWith('/milestones')) return;
+  if (!url.pathname.endsWith('/milestones')) return false;
   if (!url.search) {
-    console.log('redirect');
     url.search = '?direction=asc&sort=due_date&state=open';
     location.href = url.href;
+    return true;
+  } else {
+    return false;
   }
 }
 defaultToClosestDueDate();
-onHistoryUpdated(defaultToClosestDueDate);
+onHistoryUpdated(() => {
+  const willRedirect = defaultToClosestDueDate();
+  if (!willRedirect) setTimeout((location) => addMilestonesTimeline(), 10);
+});
 
 function addMilestonesTimeline() {
   const url = new URL(location.href);
