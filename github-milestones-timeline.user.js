@@ -39,19 +39,18 @@ function addMilestonesStyles() {
 
 function getMilestones() {
   const milestonesElement = document.querySelector('.table-list-milestones');
-  const milestones = [...milestonesElement.children].map(
-    (milestoneElement) => ({
-      title: milestoneElement
-        .querySelector('.milestone-title-link')
-        .textContent.trim(),
-      dueDate: new Date(
-        milestoneElement
-          .querySelector('.milestone-meta :first-child')
-          .textContent.trim()
-          .replace('Due by ', '')
-      ),
-    })
-  );
+  const milestones = [...milestonesElement.children].map((milestoneElement) => {
+    const title = milestoneElement
+      .querySelector('.milestone-title-link')
+      .textContent.trim();
+    const dateElement = milestoneElement.querySelector(
+      '.milestone-meta :first-child'
+    );
+    const dateText = dateElement.children[0]?.hasAttribute('title')
+      ? dateElement.children[0].title
+      : dateElement.textContent.trim().replace('Due by ', '');
+    return { title, date: new Date(dateText) };
+  });
   return milestones;
 }
 
