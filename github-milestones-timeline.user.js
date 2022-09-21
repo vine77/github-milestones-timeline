@@ -19,7 +19,23 @@ function addGlobalStyle(css) {
   head.appendChild(style);
 }
 
-function addMilestonesStyles() {}
+function addMilestonesStyles() {
+  addGlobalStyle(`
+    .milestone-description-html {
+      font-size: 12px;
+    }
+    .milestone-description-html :empty {
+      display: none;
+    }
+    .milestone-description-plaintext p,
+    .milestone-description-html p {
+      margin: 0;
+    }
+    .milestone-description-html ul {
+      margin: 0;
+    }
+  `);
+}
 
 function addMilestonesTimeline() {}
 
