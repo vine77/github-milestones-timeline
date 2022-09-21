@@ -37,7 +37,28 @@ function addMilestonesStyles() {
   `);
 }
 
-function addMilestonesTimeline() {}
+function getMilestones() {
+  const milestonesElement = document.querySelector('.table-list-milestones');
+  const milestones = [...milestonesElement.children].map(
+    (milestoneElement) => ({
+      title: milestoneElement
+        .querySelector('.milestone-title-link')
+        .textContent.trim(),
+      dueDate: new Date(
+        milestoneElement
+          .querySelector('.milestone-meta :first-child')
+          .textContent.trim()
+          .replace('Due by ', '')
+      ),
+    })
+  );
+  return milestones;
+}
+
+function addMilestonesTimeline() {
+  const milestones = getMilestones();
+  console.log(JSON.stringify(milestones));
+}
 
 addMilestonesStyles();
 addMilestonesTimeline();
