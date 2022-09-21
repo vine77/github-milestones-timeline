@@ -55,7 +55,7 @@ function addMilestonesStyles() {
       height: 10px;
       position: absolute;
       top: 50%;
-      transform: translateY(-50%) translateX(-7px);
+      transform: translateY(-50%) translateX(-50%);
       width: 10px;
     }
     .milestones-timeline-milestone-now {
@@ -63,7 +63,6 @@ function addMilestonesStyles() {
       border: transparent;
       height: 7px;
       width: 7px;
-      z-index: 1;
     }
     .milestones-timeline-milestone-date {
       font-size: 12px;
@@ -105,10 +104,6 @@ function getMilestones() {
       : dateElement.textContent.trim().replace('Due by ', '');
     return { title, date: new Date(dateText) };
   });
-  milestones.push({
-    date: new Date(),
-    type: 'now',
-  });
 
   return milestones.sort((a, b) => a.date - b.date);
 }
@@ -142,6 +137,11 @@ onHistoryUpdated(() => setTimeout((location) => addMilestonesTimeline(), 10));
 
 function addMilestonesTimeline() {
   const milestones = getMilestones();
+  const currentDate = new Date();
+  const milestonesAndNow = [
+    ...milestones,
+    { date: currentDate, type: 'now' },
+  ].sort((a, b) => a.date - b.date);
   if (milestones.length < 2) return;
   if (document.querySelector('.milestones-timeline')) {
     document.querySelector('.milestones-timeline').remove();
@@ -171,11 +171,12 @@ function addMilestonesTimeline() {
       milestoneElement = document.createElement('div');
       milestoneElement.classList.add('milestones-timeline-milestone');
       milestoneElement.setAttribute('datetime', getISODate(milestone.date));
-      milestoneElement.style.left = `${
-        ((milestone.date - milestones[0].date) /
-          (milestones[milestones.length - 1].date - milestones[0].date)) *
-        100
-      }%`;
+      milestoneElement.style.left = `${Math.round(
+        ((milestone.date - milestonesAndNow[0].date) /
+          (milestonesAndNow[milestonesAndNow.length - 1].date -
+            milestonesAndNow[0].date)) *
+          100
+      )}%`;
       timelineElement.appendChild(milestoneElement);
 
       if (milestone.type === 'now') {
@@ -207,6 +208,19 @@ function addMilestonesTimeline() {
     titleElement.textContent = milestone.title;
     descriptionElement.appendChild(titleElement);
   });
+
+  // Add dot for current date
+  nowElement = document.createElement('div');
+  nowElement.classList.add('milestones-timeline-milestone');
+  nowElement.classList.add('milestones-timeline-milestone-now');
+  nowElement.setAttribute('datetime', getISODate(currentDate));
+  nowElement.style.left = `${
+    ((currentDate - milestonesAndNow[0].date) /
+      (milestonesAndNow[milestonesAndNow.length - 1].date -
+        milestonesAndNow[0].date)) *
+    100
+  }%`;
+  timelineElement.appendChild(nowElement);
 
   tableHeaderElement.parentElement.insertBefore(
     timelineElement,
