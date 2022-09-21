@@ -36,7 +36,7 @@ function addMilestonesStyles() {
     }
     .milestones-timeline {
       height: 40px;
-      margin: 20px 40px;
+      margin: 90px 70px 20px 40px;
       position: relative;
     }
     .milestones-timeline-line {
@@ -69,8 +69,23 @@ function addMilestonesStyles() {
       font-size: 12px;
       left: 50%;
       position: absolute;
-      top: 8px;
+      top: 10px;
       transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .milestones-timeline-milestone-description {
+      font-size: 12px;
+      left: 50%;
+      position: absolute;
+      bottom: 10px;
+      transform-origin: bottom left;
+      transform: rotate(-45deg);
+
+    }
+    .milestones-timeline-milestone-title {
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
   `);
@@ -92,7 +107,6 @@ function getMilestones() {
   });
   milestones.push({
     date: new Date(),
-    title: 'Now',
     type: 'now',
   });
 
@@ -174,6 +188,24 @@ function addMilestonesTimeline() {
         milestoneElement.appendChild(dateElement);
       }
     }
+
+    // Add milestone title
+    let descriptionElement;
+    if (isDuplicateDate) {
+      descriptionElement = milestoneElement.querySelector(
+        '.milestones-timeline-milestone-description'
+      );
+    } else {
+      descriptionElement = document.createElement('div');
+      descriptionElement.classList.add(
+        'milestones-timeline-milestone-description'
+      );
+      milestoneElement.appendChild(descriptionElement);
+    }
+    const titleElement = document.createElement('div');
+    titleElement.classList.add('milestones-timeline-milestone-title');
+    titleElement.textContent = milestone.title;
+    descriptionElement.appendChild(titleElement);
   });
 
   tableHeaderElement.parentElement.insertBefore(
