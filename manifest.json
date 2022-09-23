@@ -1,0 +1,14 @@
+{
+  "name": "GitHub Milestones Timeline",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {},
+  "description": "Adds a graphical timeline to GitHub Milestones",
+  "content_scripts": [
+    {
+      "js": ["github-milestones-timeline.user.js"],
+      "matches": ["https://github.com/*"]
+    }
+  ],
+  "icons": { "128": "icon128.png" }
+}
