@@ -123,33 +123,6 @@ function getISODate(date) {
     : date.toISOString().substring(0, date.toISOString().indexOf('T'));
 }
 
-function onHistoryUpdated(callback) {
-  let previousUrl = '';
-  const observer = new MutationObserver(function (mutations) {
-    if (location.href !== previousUrl) {
-      if (previousUrl) callback(location);
-      previousUrl = location.href;
-    }
-  });
-  observer.observe(document, { subtree: true, childList: true });
-}
-function defaultToClosestDueDate() {
-  const url = new URL(location.href);
-  if (!url.pathname.endsWith('/milestones')) return false;
-  if (!url.search) {
-    url.search = '?direction=asc&sort=due_date&state=open';
-    location.href = url.href;
-    return true;
-  } else {
-    return false;
-  }
-}
-defaultToClosestDueDate();
-onHistoryUpdated(() => {
-  const willRedirect = defaultToClosestDueDate();
-  if (!willRedirect) setTimeout((location) => addMilestonesTimeline(), 10);
-});
-
 function addMilestonesTimeline() {
   const url = new URL(location.href);
   if (!url.pathname.endsWith('/milestones')) return;
@@ -245,6 +218,34 @@ function addMilestonesTimeline() {
     tableHeaderElement
   );
 }
+
+function defaultToClosestDueDate() {
+  const url = new URL(location.href);
+  if (!url.pathname.endsWith('/milestones')) return false;
+  if (!url.search) {
+    url.search = '?direction=asc&sort=due_date&state=open';
+    location.href = url.href;
+    return true;
+  } else {
+    return false;
+  }
+}
+defaultToClosestDueDate();
+
+function onHistoryUpdated(callback) {
+  let previousUrl = '';
+  const observer = new MutationObserver(function (mutations) {
+    if (location.href !== previousUrl) {
+      if (previousUrl) callback(location);
+      previousUrl = location.href;
+    }
+  });
+  observer.observe(document, { subtree: true, childList: true });
+}
+onHistoryUpdated(() => {
+  const willRedirect = defaultToClosestDueDate();
+  if (!willRedirect) setTimeout((location) => addMilestonesTimeline(), 1000);
+});
 
 addMilestonesStyles();
 addMilestonesTimeline();
