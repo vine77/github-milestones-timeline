@@ -92,6 +92,7 @@ function addMilestonesStyles() {
 
 function getMilestones() {
   const milestonesElement = document.querySelector('.table-list-milestones');
+  if (!milestonesElement) throw new Error('No milestones element found');
   const milestones = [...milestonesElement.children].map((milestoneElement) => {
     const title = milestoneElement
       .querySelector('.milestone-title-link')
