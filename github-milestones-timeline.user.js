@@ -220,6 +220,7 @@ function addMilestonesTimeline() {
   );
 }
 
+// Redirect to sort by due date ascending
 function defaultToClosestDueDate() {
   const url = new URL(location.href);
   if (!url.pathname.endsWith('/milestones')) return false;
@@ -233,20 +234,30 @@ function defaultToClosestDueDate() {
 }
 defaultToClosestDueDate();
 
-function onHistoryUpdated(callback) {
-  let previousUrl = '';
-  const observer = new MutationObserver(function (mutations) {
-    if (location.href !== previousUrl) {
-      if (previousUrl) callback(location);
-      previousUrl = location.href;
+let previousUrl = '';
+new MutationObserver(function (mutations) {
+  // Monitor for URL changes
+  if (location.href !== previousUrl) {
+    if (previousUrl) {
+      // Redirect to sort by due date ascending
+      const willRedirect = defaultToClosestDueDate();
+      // Don't add timeline if we're redirecting
+      if (willRedirect) return;
+    }
+    previousUrl = location.href;
+  }
+
+  // Monitor for addition of milestones table
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        if (node.classList?.contains('table-list-milestones')) {
+          // Add milestones timeline (with milestones data from the table)
+          addMilestonesTimeline();
+        }
+      });
     }
   });
-  observer.observe(document, { subtree: true, childList: true });
-}
-onHistoryUpdated(() => {
-  const willRedirect = defaultToClosestDueDate();
-  if (!willRedirect) setTimeout((location) => addMilestonesTimeline(), 1000);
-});
+}).observe(document, { subtree: true, childList: true });
 
 addMilestonesStyles();
-addMilestonesTimeline();
