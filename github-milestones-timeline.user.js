@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        GitHub Milestones Timeline
 // @match       https://github.com/*
-// @version     1.0
+// @version     1.0.1
 // @description Adds a graphical timeline to GitHub Milestones
 // @author      Nathan Ward
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=github.com

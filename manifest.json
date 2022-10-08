@@ -1,6 +1,6 @@
 {
   "name": "GitHub Milestones Timeline",
-  "version": "1.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "action": {},
   "description": "Adds a graphical timeline to GitHub Milestones",
