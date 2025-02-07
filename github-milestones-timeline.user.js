@@ -36,7 +36,7 @@ function addMilestonesStyles() {
     }
     .milestones-timeline {
       height: 40px;
-      margin: 90px 70px 20px 40px;
+      margin: 200px 70px 20px 40px;
       position: relative;
     }
     .milestones-timeline-line {
@@ -82,7 +82,7 @@ function addMilestonesStyles() {
 
     }
     .milestones-timeline-milestone-title {
-      max-width: 110px;
+      max-width: 260px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
