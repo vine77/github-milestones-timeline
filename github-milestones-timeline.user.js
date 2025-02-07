@@ -101,12 +101,17 @@ function getMilestones() {
       '.milestone-meta :first-child'
     );
     const dateText = dateElement.children[0]?.hasAttribute('title')
+      // Past due
       ? dateElement.children[0].title
-      : dateElement.textContent.trim().replace('Due by ', '');
-    return { title, date: new Date(dateText) };
+      // Due by
+      : dateElement.textContent.trim().includes('Due by')
+        ? dateElement.textContent.trim().replace('Due by ', '')
+        // No date
+        : null;
+    return { title, date: dateText ? new Date(dateText) : null };
   });
 
-  return milestones.sort((a, b) => a.date - b.date);
+  return milestones.filter((m) => m.date).sort((a, b) => a.date - b.date);
 }
 
 function getShortDate(date) {
